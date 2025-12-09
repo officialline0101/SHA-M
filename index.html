@@ -264,7 +264,7 @@
 <body>
     <div class="container">
         <h1>
-            <span class="small-text">SHA:M</span>
+            <span class="small-text">Reservation Form</span>
             ご予約フォーム
         </h1>
 
@@ -321,7 +321,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             // LIFF初期化
-            liff.init({ liffId: '2008660581-Z28er980' })
+            liff.init({ liffId: 2008660581-Z28er980' })
                 .then(() => console.log('LIFF init success'))
                 .catch((err) => console.log('LIFF init error', err));
             
@@ -503,25 +503,24 @@
             }
 
             const msg = 
-                `【予約フォーム送信】\n` +
+                `【ご予約内容】\n` +
                 `お名前：${name}\n` +
-                `電話番号：${document.getElementById('phone').value || 'なし'}\n` +
-                `メニュー：${selectedMenuItems.join(', ')}\n` +
+                `電話番号：${document.getElementById('phone').value || 'なし'}\n\n` +
+                `メニュー：${selectedMenuItems.join(', ')}\n\n` +
                 `第一希望：${formatDateTime(date1)}\n` +
-                `第二希望：${formatDateTime(date2)}\n` +
+                `第二希望：${formatDateTime(date2)}\n\n` +
                 `備考：${document.getElementById('message').value || 'なし'}`;
             
-            alert('以下の内容で予約を送信します（テスト）\n\n' + msg);
+            alert('以下の内容で予約を送信します\n\n' + msg);
             
-            /* 実装用LIFF送信コード
+            // 実装用LIFF送信コード
             if (liff.isLoggedIn()) {
                 liff.sendMessages([{ type: 'text', text: msg }])
                     .then(() => { liff.closeWindow(); })
                     .catch((err) => { window.alert('Error sending message: ' + err); });
             }
-            */
+            
         }
     </script>
 </body>
 </html>
-
