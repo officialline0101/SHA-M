@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サロン予約フォーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* --- カラーパレット設定（SHA_M風） --- */
+        :root {
+            --primary-color: #a71d2a; /* 深みのある赤（ボルドー） */
+            --accent-color: #c5a059;  /* シャンパンゴールド */
+            --bg-color: #ffffff;      /* 背景色：白 */
+            --text-color: #333333;    /* テキスト色 */
+            --gray-light: #f4f4f4;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 10px;
+            padding-bottom: 40px;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: var(--white);
+            width: 96%;
+            max-width: 500px;
+            padding: 25px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        h1 {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 30px 15px;
+            text-align: center;
+            margin: -25px -25px 30px -25px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        h1 .small-text {
+            display: block;
+            font-size: 13px;
+            color: #fcebeb;
+            margin-bottom: 8px;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 16px;
+            border-bottom: 1px solid #ddd;
+            font-family: 'Noto Serif JP', serif;
+        }
+        
+        .label::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background-color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .badge {
+            font-size: 11px;
+            margin-left: auto;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: normal;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .required {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .optional {
+            background-color: #999;
+            color: var(--white);
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #fafafa;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            background-color: var(--white);
+            outline: none;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .menu-buttons button {
+            flex: 1 1 45%;
+            padding: 14px 10px;
+            border: 1px solid #ccc;
+            background-color: var(--white);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            position: relative;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        .menu-buttons button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .menu-buttons button.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        button.active {
+            outline: none;
+        }
+
+        .datetime-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .placeholder {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .dt-grid {
+            display: flex;
+            gap: 10px;
+        }
+
+        .datetime-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            background-color: var(--white);
+            cursor: pointer;
+            border-radius: 0;
+        }
+        
+        #displayInfo {
+            font-size: 14px;
+            border: 1px solid #eee;
+            padding: 20px;
+            background: #fffcfc;
+            margin-bottom: 30px;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .info-row {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            letter-spacing: 2px;
+            transition: opacity 0.3s;
+            border-bottom: 4px solid #7a151f;
+        }
+
+        .submit-button:hover {
+            opacity: 0.9;
+        }
+        
+        .submit-button:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 20px 15px;
+                box-shadow: none;
+            }
+            
+            h1 {
+                margin: -20px -15px 25px -15px;
+                font-size: 20px;
+            }
+            
+            .menu-buttons button {
+                padding: 12px 5px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <span class="small-text">Reservation Form</span>
+            ご予約フォーム
+        </h1>
+
+        <div class="label">お名前<span class="badge required">必須</span></div>
+        <input type="text" id="name" placeholder="例）山田 花子" oninput="handleInput('name')">
+
+        <div class="label">電話番号<span class="badge optional">任意</span></div>
+        <input type="tel" id="phone" placeholder="例）090-1234-5678" oninput="handleInput('phone')">
+
+        <div class="label">メニュー<span class="badge required">必須</span></div>
+        <div class="menu-buttons" id="menu-container">
+            <button type="button" onclick="selectMenu(this)">winback</button>
+            <button type="button" onclick="selectMenu(this)">ガリレオピーリング</button>
+            <button type="button" onclick="selectMenu(this)">GREEN PEEL</button>
+            <button type="button" onclick="selectMenu(this)">スキンケアwaxXXX</button>
+            <button type="button" onclick="selectMenu(this)">毛穴黒ずみ除去</button>
+            <button type="button" onclick="selectMenu(this)">脱毛</button>
+        </div>
+
+        <div class="label">第一希望日時<span class="badge required">必須</span></div>
+        <div class="datetime-wrapper">
+            <span class="placeholder" id="placeholder1">▼ 日時を選択してください</span>
+            <input type="hidden" id="date1">
+            <div class="dt-grid">
+                <select id="date1_day" class="datetime-input"></select>
+                <select id="date1_time" class="datetime-input"></select>
+            </div>
+        </div>
+
+        <div class="label">第二希望日時<span class="badge required">必須</span></div>
+        <div class="datetime-wrapper">
+            <span class="placeholder" id="placeholder2">▼ 日時を選択してください</span>
+            <input type="hidden" id="date2">
+            <div class="dt-grid">
+                <select id="date2_day" class="datetime-input"></select>
+                <select id="date2_time" class="datetime-input"></select>
+            </div>
+        </div>
+
+        <div class="label">備考<span class="badge optional">任意</span></div>
+        <textarea id="message" rows="4" placeholder="ご要望やご質問がございましたらご記入ください" oninput="updateDisplayInfo()"></textarea>
+
+        <div class="label">ご予約内容の確認</div>
+        <div id="displayInfo">
+            <p style="text-align:center; color:#888; font-size:12px;">入力内容がここに反映されます</p>
+        </div>
+
+        <button class="submit-button" onclick="submitForm()">予約を確定する</button>
+    </div>
+
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script>
+        let selectedMenuItems = []; 
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // LIFF初期化
+            liff.init({ liffId: 'YOUR_LIFF_ID' })
+                .then(() => console.log('LIFF init success'))
+                .catch((err) => console.log('LIFF init error', err));
+            
+            // 日付選択肢の生成
+            ['date1', 'date2'].forEach(id => initPicker(id));
+
+            // ★ データの復元処理 ★
+            const savedName = localStorage.getItem('sha_m_name');
+            const savedPhone = localStorage.getItem('sha_m_phone');
+
+            if (savedName) {
+                document.getElementById('name').value = savedName;
+            }
+            if (savedPhone) {
+                document.getElementById('phone').value = savedPhone;
+            }
+
+            // 復元したデータを反映して表示更新
+            updateDisplayInfo();
+        });
+
+        // 入力を保存して表示を更新する関数
+        function handleInput(id) {
+            const value = document.getElementById(id).value;
+            // ローカルストレージに保存
+            localStorage.setItem('sha_m_' + id, value);
+            // 表示を更新
+            updateDisplayInfo();
+        }
+
+        // メニュー選択ロジック
+        function selectMenu(button) {
+            const buttons = document.querySelectorAll('#menu-container button');
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            button.classList.add('active');
+            selectedMenuItems = [button.innerText];
+            
+            updateDisplayInfo();
+        }
+
+        // 表示更新
+        function updateDisplayInfo() {
+            const name = document.getElementById('name').value || '未入力';
+            const phone = document.getElementById('phone').value || '未入力';
+            const menuText = selectedMenuItems.length > 0 ? selectedMenuItems.join(', ') : '未選択';
+            const remarks = document.getElementById('message').value || 'なし';
+
+            const d1 = formatDateTime(document.getElementById('date1').value);
+            const d2 = formatDateTime(document.getElementById('date2').value);
+
+            let html = `
+                <div class="info-row">
+                    <span class="info-label">お名前</span>
+                    ${escapeHtml(name)}
+                </div>
+                <div class="info-row">
+                    <span class="info-label">電話番号</span>
+                    ${escapeHtml(phone)}
+                </div>
+                <div class="info-row">
+                    <span class="info-label">メニュー</span>
+                    ${escapeHtml(menuText)}
+                </div>
+                <div class="info-row">
+                    <span class="info-label">第一希望日時</span>
+                    ${d1}
+                </div>
+                <div class="info-row">
+                    <span class="info-label">第二希望日時</span>
+                    ${d2}
+                </div>
+                <div class="info-row">
+                    <span class="info-label">備考</span>
+                    ${escapeHtml(remarks).replace(/\n/g, '<br>')}
+                </div>
+            `;
+            document.getElementById('displayInfo').innerHTML = html;
+        }
+
+        // 日付生成ロジック
+        const JP_WD = ['日', '月', '火', '水', '木', '金', '土'];
+        const pad = n => String(n).padStart(2, '0');
+
+        function initPicker(baseId) {
+            const daySel = document.getElementById(`${baseId}_day`);
+            const timeSel = document.getElementById(`${baseId}_time`);
+            
+            const d = new Date();
+            daySel.innerHTML = '<option value="" disabled selected>日付</option>';
+            for (let i = 0; i < 60; i++) {
+                const wd = d.getDay();
+                const y = d.getFullYear();
+                const m = pad(d.getMonth() + 1);
+                const day = pad(d.getDate());
+                const val = `${y}-${m}-${day}`;
+                const txt = `${m}/${day}（${JP_WD[wd]}）`;
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = txt;
+                daySel.appendChild(opt);
+                d.setDate(d.getDate() + 1);
+            }
+
+            timeSel.innerHTML = '<option value="" disabled selected>時間</option>';
+            for (let h = 10; h <= 19; h++) {
+                for (let m of [0, 30]) {
+                    if (h === 19 && m === 30) continue;
+                    const val = `${pad(h)}:${pad(m)}`;
+                    const opt = document.createElement('option');
+                    opt.value = val;
+                    opt.textContent = val;
+                    timeSel.appendChild(opt);
+                }
+            }
+
+            const updateHidden = () => {
+                const day = daySel.value;
+                const time = timeSel.value;
+                const hidden = document.getElementById(baseId);
+                const ph = document.getElementById(`placeholder${baseId.slice(-1)}`);
+                
+                if (day && time) {
+                    hidden.value = `${day}T${time}`;
+                    ph.style.display = 'none';
+                } else {
+                    hidden.value = "";
+                    ph.style.display = 'block';
+                    ph.textContent = day ? "▼ 時間を選択してください" : "▼ 日時を選択";
+                }
+                updateDisplayInfo();
+            };
+
+            daySel.addEventListener('change', updateHidden);
+            timeSel.addEventListener('change', updateHidden);
+        }
+
+        function formatDateTime(val) {
+            if (!val) return '未選択';
+            const [date, time] = val.split('T');
+            const [y, m, d] = date.split('-');
+            return `${m}月${d}日 ${time}`;
+        }
+
+        function escapeHtml(str) {
+            if(!str) return '';
+            return str.replace(/[&<>"']/g, function(match) {
+                const escape = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return escape[match];
+            });
+        }
+
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const date1 = document.getElementById('date1').value;
+            const date2 = document.getElementById('date2').value;
+
+            if (!name) {
+                alert('お名前を入力してください');
+                return;
+            }
+            if (selectedMenuItems.length === 0) {
+                alert('メニューを選択してください');
+                return;
+            }
+            if (!date1) {
+                alert('第一希望日時を選択してください');
+                return;
+            }
+            if (!date2) {
+                alert('第二希望日時を選択してください');
+                return;
+            }
+
+            const msg = 
+                `【予約フォーム送信】\n` +
+                `お名前：${name}\n` +
+                `電話番号：${document.getElementById('phone').value || 'なし'}\n` +
+                `メニュー：${selectedMenuItems.join(', ')}\n` +
+                `第一希望：${formatDateTime(date1)}\n` +
+                `第二希望：${formatDateTime(date2)}\n` +
+                `備考：${document.getElementById('message').value || 'なし'}`;
+            
+            alert('以下の内容で予約を送信します（テスト）\n\n' + msg);
+            
+            /* 実装用LIFF送信コード
+            if (liff.isLoggedIn()) {
+                liff.sendMessages([{ type: 'text', text: msg }])
+                    .then(() => { liff.closeWindow(); })
+                    .catch((err) => { window.alert('Error sending message: ' + err); });
+            }
+            */
+        }
+    </script>
+</body>
+</html>
