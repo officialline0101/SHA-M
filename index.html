@@ -422,21 +422,57 @@
                 const opt = document.createElement('option');
                 opt.value = val;
                 opt.textContent = txt;
+                opt.dataset.wd = wd; // 曜日判定用にdata属性を追加
                 daySel.appendChild(opt);
                 d.setDate(d.getDate() + 1);
             }
 
+            // 時間選択肢の初期生成（プレースホルダーのみ）
             timeSel.innerHTML = '<option value="" disabled selected>時間</option>';
-            for (let h = 10; h <= 19; h++) {
-                for (let m of [0, 30]) {
-                    if (h === 19 && m === 30) continue;
-                    const val = `${pad(h)}:${pad(m)}`;
-                    const opt = document.createElement('option');
-                    opt.value = val;
-                    opt.textContent = val;
-                    timeSel.appendChild(opt);
+
+            // 時間の選択肢を更新する関数
+            const updateTimeOptions = () => {
+                // 現在選択されている時間を取得（維持できるか確認するため）
+                const currentSelection = timeSel.value;
+                const selectedOption = daySel.options[daySel.selectedIndex];
+                
+                // 日付が未選択なら何もしない
+                if (!selectedOption || !selectedOption.value) return;
+
+                const wd = selectedOption.dataset.wd; // 0=日曜, 1=月曜...
+                const isSunday = (wd == '0');
+
+                // 終了時間を設定（日曜日なら14時、それ以外は19時）
+                const endHour = isSunday ? 14 : 19; 
+
+                // 選択肢をリセット
+                timeSel.innerHTML = '<option value="" disabled selected>時間</option>';
+
+                for (let h = 10; h <= endHour; h++) {
+                    for (let m of [0, 30]) {
+                        // 終了時間の30分枠は除外（例: 14:00までなら14:30は表示しない）
+                        if (h === endHour && m === 30) continue;
+                        
+                        const val = `${pad(h)}:${pad(m)}`;
+                        const opt = document.createElement('option');
+                        opt.value = val;
+                        opt.textContent = val;
+                        timeSel.appendChild(opt);
+                    }
                 }
-            }
+
+                // もし前に選択していた時間が新しい範囲内にあるなら、選択状態を維持
+                // なければ未選択（先頭）に戻る
+                let found = false;
+                for(let i=0; i<timeSel.options.length; i++){
+                    if(timeSel.options[i].value === currentSelection){
+                        timeSel.selectedIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) timeSel.selectedIndex = 0;
+            };
 
             const updateHidden = () => {
                 const day = daySel.value;
@@ -455,7 +491,11 @@
                 updateDisplayInfo();
             };
 
-            daySel.addEventListener('change', updateHidden);
+            // イベントリスナー設定
+            daySel.addEventListener('change', () => {
+                updateTimeOptions(); // 日付変更時に時間を再生成
+                updateHidden();      // 隠しフィールド更新
+            });
             timeSel.addEventListener('change', updateHidden);
         }
 
